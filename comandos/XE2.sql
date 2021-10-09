@@ -196,15 +196,35 @@ values
     , 1
     , 'Tijuca');
 
-select * from tb_produtos where substr(descritor, 1, 13) like '%Sabor dos Alpes%';
+select * from tb_produtos where substr(descritor, 1, 19) = 'Festival de Sabores';
 
+select
+    b.nome_do_produto
+    , sum(preco_lista)
+from
+    tb_produtos a
+        INNER JOIN tabela_de_produtos b
+        ON a.descritor = b.nome_do_produto
+            where b.nome_do_produto like '%Videira do Campo%'
+                group by
+                    b.nome_do_produto;
+                    
+select * from tabela_de_produtos
+    where substr(nome_do_produto, ;
 
+select LENGTH(tabela_de_produtos) from dual;
 
+delete from tb_produtos where codigo = '243083';
 
-
-
-
-
-
-
-
+select
+    table_name
+    , iot_name
+    , iot_type
+    , external
+    , partitioned
+    , temporary
+    , cluster_name
+from
+    dba_tables;
+    
+select * from tabela_de_produtos;
