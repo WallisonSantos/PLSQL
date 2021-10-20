@@ -55,11 +55,13 @@ BEGIN
     -- Se o cursor acabou, eu saio do loop. Lembrando, loop eu tenho LOOP, EXIT WHEN e END LOOP;. Não necessariamente – isso é um detalhe que talvez eu não tenha falado 
     -- o exit when precisa estar colado ao end loop, eu posso ter comandos entre o loop e o exit when e comandos entre o exit when e o end loop.
 
-    LOOP
+    LOOP            
+        FETCH cur_cliente INTO v_id, v_razao_social;
     -- Vou jogar o conteudo do cursor em duas varias v_id, v_razao_social, pois o SELECT tras duas colunas,
     -- a variavel que vai receber o conteudo da primeira coluna daquela linha e a que vai receber o conteudo da segunda coluna daquela linha (Se no SELECT tivesse 20 colunas deveria haver no INTO 20 variaveis)
-        FETCH cur_cliente INTO v_id, v_razao_social;
-
+    -- O comando Fetch, do cursor, realiza a sua leitura.nA quantidade de variáveis após a cláusula INTO, do comando FETCH,
+    -- deverá ser igual à quantidade de colunas do cursor. O processo de leitura só anda para frente
+    
     EXIT WHEN
         -- Sair do Loop quando, ao dar o FETCH não foi encontrado uma linha, porem se ao fazer o FETCH foi encontrado uma linha, o NOTFOUND não será verdade, e continuara
         -- executando os comandos após ele, onde iremos escrever na saida o conteudo da variavel v_id e razao social
@@ -87,3 +89,38 @@ END;
 -- Razao Social = Lojas Americana
 -- ID = 9
 -- Razao Social = Mercado
+
+-- Atualziar o segmento de mercado (UPDATE) mesmo quando não sabemos o tamanho do ID ou quando esta fora de ordem.
+-- O comando SELECT, do cursor, é definido entre DECLARE/IS e o BEGIN do bloco. A query do cursor pode referenciar uma ou mais tabelas.
+-- A query do cursor é o comando SELECT do SQL. Podemos utilizar qualquer recurso que esteja disponível para esse comando. 
+-- Por exemplo: pode conter várias tabelas, cláusulas WHERE, ORDER BY, GROUP BY, HAVING, ou qualquer outra cláusula que seja aceita no SELECT do SQL do Oracle:
+DECLARE
+    CURSOR cur_cliente IS
+    SELECT
+        id
+    FROM
+        cliente;
+
+    v_segmercado_id cliente.segmercado_id%TYPE := 3;
+    v_id            cliente.id%TYPE;
+BEGIN
+    OPEN cur_cliente;
+    LOOP
+        FETCH cur_cliente INTO v_id;
+        EXIT WHEN cur_cliente%notfound;
+        atualizar_cli_seg_mercado(p_segmercado_id => v_segmercado_id, p_id => v_id);
+    END LOOP;
+
+    CLOSE cur_cliente;
+END;
+
+SELECT
+    *
+FROM
+    cliente;
+
+
+
+
+
+
